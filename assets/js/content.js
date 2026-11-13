@@ -3,7 +3,7 @@
  */
 const CONTENT = {
   email: "aris.wei@gmail.com",
-  siteUrl: "",                          // 網站上線後把網址填在這裡，PDF 履歷的頁首會顯示
+  siteUrl: "https://waynechang-pm.github.io/",   // PDF 履歷的頁首會顯示這個網址
   pdf: { zh: "assets/docs/resume-zh.pdf", en: "assets/docs/resume-en.pdf" },
   storyLength: "1:10",
 
