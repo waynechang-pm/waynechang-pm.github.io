@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>張耿維 Wayne｜AI 導入專案經理</title>
+  <meta name="description" content="近 8 年專案管理資歷，把 AI 帶進真實工作現場的專案經理。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0a08'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23d6a55a'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+  <!-- 首頁：循環影片＋浮動標籤 -->
+  <div class="hero" id="top">
+    <header class="topbar">
+      <div class="who">
+        <h1 class="name" data-t="name"></h1>
+        <p class="role" data-t="role"></p>
+        <p class="stats" data-t="stats"></p>
+      </div>
+      <div class="actions">
+        <button class="lang" id="langBtn" type="button"></button>
+        <a class="pdf" id="pdfBtn" href="#" target="_blank" rel="noopener"></a>
+      </div>
+    </header>
+
+    <div class="stage-wrap" id="stageWrap">
+      <div class="stage-col">
+        <div class="stage" id="stage">
+          <video id="loop" autoplay muted loop playsinline preload="auto" poster="assets/video/home_poster.jpg">
+            <source src="assets/video/home_loop.mp4" type="video/mp4">
+          </video>
+          <svg class="wires" id="wires" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="tags" id="tags"></div>
+        </div>
+      </div>
+
+      <!-- 點標籤後，從右邊滑出的內容 -->
+      <aside class="panel" id="panel" aria-hidden="true">
+        <div class="panel-in">
+          <div class="panel-head">
+            <h2 id="panelTitle"></h2>
+            <button class="xbtn" id="panelClose" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+            </button>
+          </div>
+          <div class="panel-body prose" id="panelBody"></div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="below">
+      <nav class="chips" id="chips"></nav>
+      <button class="story-btn" id="storyBtn" type="button"></button>
+      <p class="stats-m" data-t="stats"></p>
+      <a class="scroll-hint" href="#text" data-t="scroll"></a>
+    </div>
+  </div>
+
+  <!-- 往下捲：文字版（和標籤內容相同） -->
+  <main class="text" id="text"></main>
+
+  <footer class="foot">
+    <p>© <span id="year"></span> <span data-t="name"></span> · <a id="mailLink"></a></p>
+  </footer>
+
+  <!-- 故事影片播放器 -->
+  <div class="player" id="player" hidden>
+    <div class="pframe">
+      <div class="pv">
+        <video id="story" playsinline preload="metadata" poster="assets/video/story_poster.jpg"></video>
+        <button class="ctx-tag" id="ctxTag" type="button"></button>
+        <div class="endcard" id="endcard" hidden>
+          <button class="ec-btn" id="ecReplay" type="button"></button>
+          <a class="ec-btn primary" id="ecPdf" href="#" target="_blank" rel="noopener"></a>
+          <button class="ec-btn" id="ecClose" type="button"></button>
+        </div>
+      </div>
+      <div class="pbar">
+        <button class="pp" id="pp" type="button">
+          <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14M17 5v14"/></svg>
+          <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>
+        </button>
+        <div class="chapters" id="chapters"></div>
+        <button class="mute" id="mute" type="button">
+          <svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9zM16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12"/></svg>
+          <svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9zM16 9l5 6M21 9l-5 6"/></svg>
+        </button>
+      </div>
+      <button class="xbtn px" id="playerClose" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <script src="assets/js/content.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
