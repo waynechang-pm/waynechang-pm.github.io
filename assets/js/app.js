@@ -15,7 +15,9 @@
   if (!C.ui[lang]) lang = "zh";
 
   let openId = null;            // 目前打開的標籤
-  let chIdx = -1;               // 故事影片目前的章節
+  let chIdx = -1;               // 影片目前的章節
+  let cur = C.videos[0];        // 目前播放器裡是哪一部影片
+  let lastBtn = null;           // 剛才按的是哪一顆影片按鈕（關閉播放器後把焦點還回去）
   const pdfOk = {};             // 各語言的 PDF 是否已經放上來
 
   const ui = (k) => C.ui[lang][k];
@@ -39,7 +41,16 @@
     long.className = "long"; long.textContent = ui("pdfBtn");
     short.className = "short"; short.textContent = ui("pdfShort");
     $("#pdfBtn").replaceChildren(long, short);   // 手機顯示短的，電腦顯示完整的
-    $("#storyBtn").textContent = ui("storyBtn");
+    const btns = $("#storyBtns");            // 每部影片一顆按鈕
+    btns.replaceChildren();
+    C.videos.forEach((v) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "story-btn";
+      b.dataset.video = v.id;
+      b.textContent = v.btn[lang];
+      btns.append(b);
+    });
     // 手機上那行數字：只在逗號和「·」的地方換行，不要把詞切一半
     const sm = $(".stats-m");
     sm.replaceChildren();
@@ -173,13 +184,13 @@
 
   /* ---------- 故事影片 ---------- */
   function storySrc() {
-    return "assets/video/story_" + lang + "_" + (window.innerWidth < 900 ? "720" : "1080") + ".mp4";
+    return "assets/video/" + cur.file + "_" + lang + "_" + (window.innerWidth < 900 ? "720" : "1080") + ".mp4";
   }
 
   function renderChapters() {
     const box = $("#chapters");
     box.innerHTML = "";
-    C.chapters.forEach((c, i) => {
+    cur.chapters.forEach((c, i) => {
       const b = document.createElement("button");
       b.type = "button";
       b.className = "ch";
@@ -206,12 +217,12 @@
 
   function updateProgress() {
     const t = story.currentTime || 0;
-    const dur = story.duration || 70.5;
+    const dur = story.duration || cur.dur;
     let idx = 0;
-    C.chapters.forEach((c, i) => { if (t >= c.t) idx = i; });
+    cur.chapters.forEach((c, i) => { if (t >= c.t) idx = i; });
     $$(".ch").forEach((el, i) => {
-      const start = C.chapters[i].t;
-      const end = i + 1 < C.chapters.length ? C.chapters[i + 1].t : dur;
+      const start = cur.chapters[i].t;
+      const end = i + 1 < cur.chapters.length ? cur.chapters[i + 1].t : dur;
       const p = Math.max(0, Math.min(1, (t - start) / (end - start)));
       el.querySelector(".fill").style.width = (p * 100).toFixed(1) + "%";
       el.classList.toggle("now", i === idx);
@@ -219,7 +230,7 @@
     if (idx !== chIdx) {
       const first = chIdx === -1;
       chIdx = idx;
-      setCtx(C.chapters[idx].tag, first);
+      setCtx(cur.chapters[idx].tag, first);
     }
   }
 
@@ -234,7 +245,15 @@
     if (story.readyState >= 1) go(); else story.addEventListener("loadedmetadata", go, { once: true });
   }
 
-  function openPlayer() {
+  function openPlayer(id) {
+    const next = C.videos.find((v) => v.id === id) || C.videos[0];
+    if (next !== cur) {          // 換另一部影片：章節、封面、檔案都換掉
+      cur = next;
+      story.removeAttribute("src");
+      story.load();
+      renderChapters();
+    }
+    story.setAttribute("poster", cur.poster);
     closePanel();
     player.hidden = false;
     document.body.style.overflow = "hidden";
@@ -253,7 +272,7 @@
     player.hidden = true;
     document.body.style.overflow = "";
     if (!reduceMotion) loop.play().catch(() => {});
-    $("#storyBtn").focus({ preventScroll: true });
+    if (lastBtn && lastBtn.isConnected) lastBtn.focus({ preventScroll: true });
   }
 
   function togglePlay() {
@@ -309,17 +328,18 @@
   document.addEventListener("click", (e) => {
     const t = e.target.closest(".tag, .chip");
     if (t) { openPanel(t.dataset.id); return; }
+    const sb = e.target.closest(".story-btn");
+    if (sb) { lastBtn = sb; openPlayer(sb.dataset.video); return; }
     const ch = e.target.closest(".ch");
     if (ch) {
       showEnd(false);
-      seekStory(C.chapters[Number(ch.dataset.i)].t);
+      seekStory(cur.chapters[Number(ch.dataset.i)].t);
       story.play().catch(() => {});
     }
   });
 
   $("#panelClose").addEventListener("click", closePanel);
   $("#langBtn").addEventListener("click", () => setLang(lang === "zh" ? "en" : "zh"));
-  $("#storyBtn").addEventListener("click", openPlayer);
   $("#playerClose").addEventListener("click", closePlayer);
   $("#pdfBtn").addEventListener("click", onPdfClick);
   $("#ecPdf").addEventListener("click", onPdfClick);
@@ -330,7 +350,7 @@
   $("#ecClose").addEventListener("click", closePlayer);
 
   $("#ctxTag").addEventListener("click", () => {
-    const tag = C.chapters[Math.max(0, chIdx)].tag;
+    const tag = cur.chapters[Math.max(0, chIdx)].tag;
     story.pause();
     if (tag === "pdf") {
       if (pdfOk[C.pdf[lang]] === false) toast(ui("pdfMissing")); else window.open(C.pdf[lang], "_blank", "noopener");

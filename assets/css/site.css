@@ -120,9 +120,10 @@ body.panel-open .stage-col { padding-right: 20px; }
   display: flex; align-items: center; justify-content: center; gap: 28px; position: relative;
 }
 .chips { display: none; }
+.story-btns { display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; }
 .story-btn {
   background: rgba(11, 10, 8, .6); border: 1.5px solid var(--text); border-radius: 999px;
-  padding: 12px 34px; font-size: clamp(1rem, 1.5vw, 1.35rem); letter-spacing: .06em;
+  padding: 12px 30px; font-size: clamp(.95rem, 1.35vw, 1.25rem); letter-spacing: .05em; white-space: nowrap;
   transition: background .2s, color .2s, border-color .2s;
 }
 .story-btn:hover { background: var(--text); color: #14110c; }
@@ -137,6 +138,12 @@ body.panel-open .stage-col { padding-right: 20px; }
 .prose .period { margin: 0 0 8px; color: var(--muted); font-family: var(--serif); font-style: italic; letter-spacing: .06em; }
 .prose p { margin: 10px 0; }
 .prose .pos { color: var(--amber-soft); font-size: 1.15rem; font-weight: 500; }
+/* AI 導入實績的案例框（第二版新增） */
+.prose .case-box { margin: 18px 0 22px; padding: 16px 20px 8px; border-left: 3px solid var(--amber); background: var(--card); }
+.prose .case-box h3 { margin: 0 0 4px; }
+.prose .case-box .meta { margin: 0 0 6px; color: var(--muted); font-size: .92rem; }
+.prose .case-box ul.kv li:last-child { border-bottom: 0; }
+.prose .case-box a { color: inherit; text-decoration: underline; text-decoration-color: var(--line); }
 .prose ul { margin: 8px 0; padding-left: 1.3em; }
 .prose li { margin: 7px 0; }
 .prose li::marker { color: var(--amber); }
@@ -233,7 +240,7 @@ body.panel-open .stage-col { padding-right: 20px; }
   .who { min-width: 0; }
   .name { white-space: nowrap; font-size: clamp(1.1rem, 5.6vw, 1.6rem); }
   .role { letter-spacing: .08em; }
-  html[lang="en"] .name .alt { display: none; }
+  .name .alt { display: none; }   /* 手機空間小：中英文都只顯示一個名字 */
   .stats-m { display: block; margin: 0; padding: 0 20px; color: var(--muted); font-size: .9rem; line-height: 1.7; text-align: center; }
   .stats-m .nb { white-space: nowrap; }
   .endcard { gap: 8px; padding: 10px; }
@@ -249,7 +256,8 @@ body.panel-open .stage-col { padding-right: 20px; }
     padding: 9px 16px; font-size: .95rem; letter-spacing: .03em;
   }
   .chip.on { background: rgba(72, 52, 22, .96); }
-  .story-btn { width: calc(100% - 32px); }
+  .story-btns { width: 100%; flex-direction: column; gap: 12px; }
+  .story-btn { width: calc(100% - 32px); white-space: normal; }
   .scroll-hint { position: static; }
   /* 內容框：從下方滑上來，蓋住整個畫面 */
   .panel {
@@ -294,3 +302,6 @@ body.panel-open .stage-col { padding-right: 20px; }
   body, .text { background: #fff; color: #000; }
   .prose, .prose h3, .num b, .text h2 { color: #000; }
 }
+
+/* 職稱換行時，只在空格處斷開，不要把「專案經理」切成兩半 */
+.role { word-break: keep-all; }
